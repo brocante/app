@@ -1,0 +1,36 @@
+<ion-view view-title="Mon compte">
+    <ion-content>
+
+        <!--<img ng-src="{{currentUser.auth.facebook.cachedUserProfile.picture.data.url}}" alt=""/>
+
+        <p>{{currentUser.auth.facebook.displayName}}</p>-->
+
+        <form ng-submit="save(currentUser)">
+
+            <div class="list">
+
+                <label class="item item-input">
+                    <i class="ion-ios-email-outline placeholder-icon"></i>
+                    <input type="email" placeholder="Email" ng-model="currentUser.config.email">
+                </label>
+
+                <label class="item item-input">
+                    <i class="ion-ios-telephone-outline placeholder-icon"></i>
+                    <input type="tel" placeholder="Numéro de téléphone" ng-model="currentUser.config.phone">
+                </label>
+            </div>
+
+
+            <p class="padding">
+                <input ng-disabled="saving" type="submit" value="{{submitText}}" class="button button-block button-calm" />
+            </p>
+        </form>
+
+        <p class="padding" style="margin-top:80px;">
+            <button class="button button-block button-stable button-clear" ng-click="logout()">
+                Déconnecter
+            </button>
+        </p>
+
+    </ion-content>
+</ion-view>

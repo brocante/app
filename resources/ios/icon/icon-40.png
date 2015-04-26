@@ -1,0 +1,3 @@
+Unrecoverable error: rangecheck in setscreen
+Operand stack:
+    0.0878851  0  --nostringval--

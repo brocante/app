@@ -1,0 +1,12 @@
+{
+  "name": "Brocante",
+  "app_id": "695db959",
+  "gulpStartupTasks": [
+    "sass",
+    "watch"
+  ],
+  "watchPatterns": [
+    "www/**/*",
+    "!www/lib/**/*"
+  ]
+}
