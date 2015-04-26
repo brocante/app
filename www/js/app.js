@@ -64,7 +64,7 @@ angular.module('starter', [
 
     .config(function($stateProvider, $urlRouterProvider, $cordovaFacebookProvider) {
 
-        //cordova -d plugin add /Users/yannlombard/test/phonegap-facebook-plugin --variable APP_ID="1459559780935638" --variable APP_NAME="72h"
+        //cordova -d plugin add /Users/yannlombard/test/phonegap-facebook-plugin --variable APP_ID="1459559780935638" --variable APP_NAME="Brocante"
 
         if (window.cordova && window.cordova.platformId === 'browser') {
             var appID = 1459559780935638;
