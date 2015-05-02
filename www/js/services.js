@@ -2,15 +2,19 @@ angular.module('starter.services', [])
 
     .factory('DB', function() {
         var positions = new GeoFire(new Firebase('https://donner-a-lyon.firebaseio.com/positions'));
+        var removedPositions = new GeoFire(new Firebase('https://donner-a-lyon.firebaseio.com/removedPositions'));
         var products = new Firebase('https://donner-a-lyon.firebaseio.com/products');
+        var removedProducts = new Firebase('https://donner-a-lyon.firebaseio.com/removedProducts');
         var users = new Firebase('https://donner-a-lyon.firebaseio.com/users');
         var main = new Firebase('https://donner-a-lyon.firebaseio.com/');
 
         return {
-            positions: positions,
-            products : products,
-            users    : users,
-            main     : main
+            positions       : positions,
+            removedPositions: removedPositions,
+            products        : products,
+            removedProducts : removedProducts,
+            users           : users,
+            main            : main
         };
     })
 
@@ -41,7 +45,9 @@ angular.module('starter.services', [])
 
                 DB.products.child(key).once('value', function(productSnap) {
                     item.object = productSnap.val();
-                    item.object.priority = productSnap.getPriority() || 0;
+                    if(item.object) {
+                        item.object.priority = productSnap.getPriority() || 0;
+                    }
                     $rootScope.$digest();
                 });
 
@@ -145,6 +151,32 @@ angular.module('starter.services', [])
             });
 
             return deferred.promise;
+        };
+
+        factory.removeProduct = function(product) {
+
+            // TODO please...
+            DB.products.child(product.key).once('value', function(snap) {
+                var currentKey = product.key;
+                var currentProduct = snap.val();
+
+                DB.positions.get(currentKey).then(function(currentLocation) {
+
+                    DB.positions.remove(currentKey).then(function() {
+                        DB.removedPositions.set(currentKey, currentLocation).then(function() {
+                            DB.products.child(product.key).remove(function() {
+                                DB.removedProducts.child(currentKey).set(currentProduct, function() {
+                                    DB.users.child($rootScope.currentUser.auth.uid + '/products/' + currentKey).remove(function() {
+                                        DB.users.child($rootScope.currentUser.auth.uid + '/removedProducts/' + currentKey).set(true);
+                                    });
+                                });
+                            });
+                        });
+                    });
+
+                });
+            });
+
         };
 
         factory.saveToFirebase = function(path) {

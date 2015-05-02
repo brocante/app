@@ -100,7 +100,7 @@ angular.module('starter.controllers', [])
 
     })
 
-    .controller('ProductsCtrl', function($scope, Location, Products, $ionicActionSheet, $rootScope) {
+    .controller('ProductsCtrl', function($scope, Location, Products, $ionicActionSheet, $rootScope, Backend, $ionicPopup) {
         $scope.Location = Location;
 
         $scope.shouldShowReorder = true;
@@ -155,16 +155,16 @@ angular.module('starter.controllers', [])
 
             // Show the action sheet
             var hideSheet = $ionicActionSheet.show({
-                buttons        : buttons,
+                buttons      : buttons,
                 //destructiveText: 'Delete',
-                titleText      : 'Contacter l\'annonceur',
-                cancelText     : '<strong>Annuler</strong>',
-                cancel         : function() {
+                titleText    : 'Contacter l\'annonceur',
+                cancelText   : '<strong>Annuler</strong>',
+                cancel       : function() {
                     // add cancel code..
                 },
-                buttonClicked  : function(index, item) {
+                buttonClicked: function(index, item) {
 
-                    switch(item.text) {
+                    switch (item.text) {
                         case phone:
                             document.location.href = 'tel:' + product.object.phone;
                             break;
@@ -182,7 +182,18 @@ angular.module('starter.controllers', [])
                             break;
 
                         case remove:
-                            console.log('REMOVE', product);
+
+                            var confirmPopup = $ionicPopup.confirm({
+                                title   : 'Supprimer l\'annonce ?',
+                                template: 'Êtes-vous sur de vouloir supprimer cette annonce ?'
+                            });
+
+                            confirmPopup.then(function(res) {
+                                if(res) {
+                                    Backend.removeProduct(product);
+                                }
+                            });
+
                             break;
                     }
                     return true;
