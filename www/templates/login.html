@@ -10,6 +10,10 @@
                 via une simple photo ou récupérer autours de <br/>vous, telle une
                 vraie brocante de quartier. <br/>Bonne chasse !</p>
 
+            <button ng-if="tryAuth" class="button button-block button-calm" ng-click="signInFacebook()">
+                Se connecter avec Facebook
+            </button>
+
             <p>Vous devez vous connecter à Facebook <br/>
                 pour nous permettre d'avoir votre email <br/>
                 et photo de profil.</p>
@@ -17,9 +21,6 @@
             <p>Nous ne partagerons rien sur Facebook <br/>
                 sans vôtre consentement, promis !</p>
 
-            <button ng-if="tryAuth" class="button button-block button-calm" ng-click="signInFacebook()">
-                Se connecter avec Facebook
-            </button>
             <p ng-if="!tryAuth">Identification...</p>
         </div>
     </ion-content>

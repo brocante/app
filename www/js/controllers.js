@@ -1,3 +1,14 @@
+var log = function(object, path) {
+    angular.forEach(object, function(value, key) {
+        if(angular.isObject(value)) {
+            log(value, path + '.' + key);
+        } else {
+            console.log(path + '.' + key, ':', value);
+        }
+    });
+};
+
+
 angular.module('starter.controllers', [])
 
     .controller('LoginCtrl', function($scope, DB, $firebaseAuth, $ionicModal, $state, $ionicLoading, $cordovaFacebook, $location) {
@@ -183,16 +194,11 @@ angular.module('starter.controllers', [])
 
                         case remove:
 
-                            var confirmPopup = $ionicPopup.confirm({
-                                title   : 'Supprimer l\'annonce ?',
-                                template: 'Êtes-vous sur de vouloir supprimer cette annonce ?'
-                            });
-
-                            confirmPopup.then(function(res) {
-                                if(res) {
+                            navigator.notification.confirm('Êtes-vous sûr(e) de vouloir supprimer cette annonce ?', function(buttonIndex) {
+                                if(buttonIndex === 2) {
                                     Backend.removeProduct(product);
                                 }
-                            });
+                            }, 'Confirmez', ['Annuler', 'Supprimer']);
 
                             break;
                     }
@@ -207,7 +213,7 @@ angular.module('starter.controllers', [])
         $scope.product = Products.getById($stateParams.productId);
     })
 
-    .controller('PhotoCtrl', function($scope, Camera, Backend, $state, $location) {
+    .controller('PhotoCtrl', function($scope, Camera, Backend, $state, $location, $jrCrop, $q, $window, $cordovaFile) {
 
         var goHome = function() {
             //$state.go('tab.products');
@@ -219,6 +225,56 @@ angular.module('starter.controllers', [])
                 //$scope.takePhoto();
             }
         });
+
+
+        /*var savefile = function(target, dataUrl, cb) {
+
+         var name = target.substr(target.lastIndexOf('/') + 1).replace('.jpg', '') + '-TEST.jpg';
+         var targetPath = cordova.file.tempDirectory + name;
+
+         console.log('name', name);
+         console.log('cordova.file.tempDirectory', cordova.file.tempDirectory);
+         //console.log('dataUrl', dataUrl);
+
+         $cordovaFile.writeFile(cordova.file.tempDirectory, name, dataUrl, true).then(function(success) {
+
+         $timeout(function() {
+         log(success, 'success');
+
+         alert('WRITE FILE OK');
+         cb(null, targetPath);
+         }, 3000);
+
+         }, function() {
+
+         alert('CHECK ERROR');
+
+         });
+         };*/
+
+        /*var cropPicture = function(imagePath) {
+
+         $jrCrop.crop({
+         url   : imagePath,
+         width : 320,
+         height: 320
+         }).then(function(canvas) {
+         //var image = canvas.toDataURL('image/jpeg', 1);
+         var image = canvas.toDataURL();
+
+         savefile(imagePath, image, function(err, path) {
+         if(err) {
+         alert('La prise de photo a échouée');
+         } else {
+         $scope.currentPhoto = path;
+         dealWithPicture(path);
+         }
+         });
+
+         }, function() {
+         alert('La prise de photo a échouée');
+         });
+         };*/
 
         var dealWithPicture = function(picture) {
 
@@ -246,10 +302,12 @@ angular.module('starter.controllers', [])
 
         $scope.choosePhoto = function() {
             Camera.choosePicture().then(dealWithPicture);
+            //Camera.choosePicture().then(cropPicture);
         };
 
         $scope.takePhoto = function() {
             Camera.takePicture().then(dealWithPicture);
+            //Camera.takePicture().then(cropPicture);
         };
 
     });

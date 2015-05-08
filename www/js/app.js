@@ -6,7 +6,8 @@ angular.module('starter', [
     'starter.directives',
     'ngCordova',
     'firebase',
-    'ui.router'
+    'ui.router',
+    'jrCrop'
 ])
 
     .run(function($ionicPlatform, Location, Auth, $ionicLoading, $location, $rootScope, DB) {

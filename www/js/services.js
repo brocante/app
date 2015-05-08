@@ -241,24 +241,30 @@ angular.module('starter.services', [])
     .factory('Camera', function($cordovaCamera, $q) {
         var factory = {};
 
+        var popover = new CameraPopoverOptions(0, 0, 320, 320, Camera.PopoverArrowDirection.ARROW_ANY);
+
         var defaultConfig = {
+            quality         : 75,
             destinationType : Camera.DestinationType.FILE_URI,
             allowEdit       : true,
             encodingType    : Camera.EncodingType.JPEG,
-            popoverOptions  : CameraPopoverOptions,
+            targetWidth     : 320,
+            targetHeight    : 320,
             saveToPhotoAlbum: false,
-            targetWidth     : 500,
-            targetHeight    : 500
+            popoverOptions  : popover
+
         };
 
         factory.choosePicture = function() {
             var deferred = $q.defer();
 
             if(angular.isDefined(window.Camera)) {
-                var options = angular.extend({}, defaultConfig, {sourceType: Camera.PictureSourceType.PHOTOLIBRARY});
+                var options = angular.extend({}, defaultConfig, {
+                    sourceType: Camera.PictureSourceType.PHOTOLIBRARY
+                });
 
-                console.log('choosePicture');
-                navigator.camera.getPicture(deferred.resolve, deferred.reject, options);
+                //navigator.camera.getPicture(deferred.resolve, deferred.reject, options);
+                $cordovaCamera.getPicture(options).then(deferred.resolve, deferred.reject);
             } else {
                 deferred.reject();
             }
@@ -270,10 +276,12 @@ angular.module('starter.services', [])
             var deferred = $q.defer();
 
             if(angular.isDefined(window.Camera)) {
-                var options = angular.extend({}, defaultConfig, {sourceType: Camera.PictureSourceType.CAMERA});
+                var options = angular.extend({}, defaultConfig, {
+                    sourceType: Camera.PictureSourceType.CAMERA
+                });
 
-                console.log('takePicture');
-                navigator.camera.getPicture(deferred.resolve, deferred.reject, options);
+                //navigator.camera.getPicture(deferred.resolve, deferred.reject, options);
+                $cordovaCamera.getPicture(options).then(deferred.resolve, deferred.reject);
             } else {
                 deferred.reject();
             }
