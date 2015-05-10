@@ -241,15 +241,15 @@ angular.module('starter.services', [])
     .factory('Camera', function($cordovaCamera, $q) {
         var factory = {};
 
-        var popover = new CameraPopoverOptions(0, 0, 320, 320, Camera.PopoverArrowDirection.ARROW_ANY);
+        var popover = new CameraPopoverOptions(0, 0, 500, 500, Camera.PopoverArrowDirection.ARROW_ANY);
 
         var defaultConfig = {
             quality         : 75,
             destinationType : Camera.DestinationType.FILE_URI,
             allowEdit       : true,
             encodingType    : Camera.EncodingType.JPEG,
-            targetWidth     : 320,
-            targetHeight    : 320,
+            targetWidth     : 500,
+            targetHeight    : 500,
             saveToPhotoAlbum: false,
             popoverOptions  : popover
 
