@@ -45,18 +45,20 @@ angular.module('starter.controllers', [])
 
                     auth.$authWithOAuthToken('facebook', success.authResponse.accessToken).then(function(authData) {
 
-                        console.log("Logged in as:", authData.uid);
+                        console.log('Logged in as:', authData.uid);
                         afterLogin(authData);
 
                     }).catch(function(error) {
 
-                        alert("Firebase Authentication failed:", error);
+                        console.log('Firebase Authentication failed:', error);
+                        alert('L\'identification a échouée');
                         $ionicLoading.hide();
 
                     });
 
                 }, function(error) {
-                    alert("Authentication failed:" + error.message);
+                    console.log('Firebase Authentication failed:', error);
+                    alert('L\'identification a échouée');
                     $ionicLoading.hide();
                 });
             } else {
@@ -65,12 +67,14 @@ angular.module('starter.controllers', [])
                     scope: 'public_profile,email'
                 }).then(function(authData) {
 
-                    console.log("Logged in as:", authData.uid);
+                    console.log('Logged in as:', authData.uid);
                     afterLogin(authData);
 
                 }).catch(function(error) {
 
-                    alert("Firebase Authentication failed:", error);
+                    console.log('Firebase Authentication failed:', error);
+                    alert('L\'identification a échouée');
+
                     $ionicLoading.hide();
 
                 });
