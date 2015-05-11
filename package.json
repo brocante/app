@@ -15,19 +15,21 @@
     "shelljs": "^0.3.0"
   },
   "cordovaPlugins": [
-    "com.ionic.keyboard",
-    "org.apache.cordova.geolocation",
-    "org.apache.cordova.console",
-    "org.apache.cordova.device",
-    "org.apache.cordova.file",
-    "org.apache.cordova.file-transfer",
-    "org.apache.cordova.dialogs",
-    "org.apache.cordova.statusbar",
     {
       "id": "com.phonegap.plugins.facebookconnect",
       "locator": "/Users/yannlombard/test/phonegap-facebook-plugin"
     },
     "uk.co.workingedge.phonegap.plugin.launchnavigator",
-    "org.apache.cordova.camera@latest"
+    "org.apache.cordova.camera@latest",
+    "org.apache.cordova.statusbar",
+    "com.ionic.keyboard",
+    "org.apache.cordova.camera",
+    "org.apache.cordova.console",
+    "org.apache.cordova.device",
+    "org.apache.cordova.dialogs",
+    "org.apache.cordova.file",
+    "org.apache.cordova.file-transfer",
+    "org.apache.cordova.geolocation",
+    "uk.co.workingedge.phonegap.plugin.LaunchNavigator"
   ]
 }

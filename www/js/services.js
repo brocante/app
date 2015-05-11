@@ -88,6 +88,7 @@ angular.module('starter.services', [])
         var factory = {};
 
         var posOptions = {
+            frequency         : 1000,
             timeout           : 10000,
             enableHighAccuracy: false
         };
@@ -100,14 +101,16 @@ angular.module('starter.services', [])
             var deferred = $q.defer();
 
             $ionicPlatform.ready(function() {
-                $cordovaGeolocation.getCurrentPosition(posOptions).then(function(position) {
+                $cordovaGeolocation.watchPosition(posOptions).then(null, function() {
+                    $cordovaGeolocation.clearWatch();
+                    console.log('Location error - LocationProvider');
+                }, function(position) {
+                    $cordovaGeolocation.clearWatch();
 
                     factory.currentPosition = position.coords;
                     factory.isSet = true;
                     deferred.resolve(factory.currentPosition);
                     alreadyLocated.resolve();
-                }, function() {
-                    console.log('Location error - LocationProvider');
                 });
             });
 

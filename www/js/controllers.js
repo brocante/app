@@ -115,10 +115,14 @@ angular.module('starter.controllers', [])
 
     })
 
-    .controller('ProductsCtrl', function($scope, Location, Products, $ionicActionSheet, $rootScope, Backend, $ionicPopup) {
+    .controller('ProductsCtrl', function($scope, Location, Products, $ionicActionSheet, $rootScope, Backend, $location) {
         $scope.Location = Location;
 
         $scope.shouldShowReorder = true;
+
+        $scope.gotoAdd = function() {
+            $location.path('/tab/photo');
+        };
 
         var current;
         var products = [];

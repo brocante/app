@@ -4,6 +4,19 @@
             <bro-loader class="cssLoader"></bro-loader>
         </p>
 
+        <p class="noDataMessage"
+           ng-if="!!Location.isSet && !update(Location.currentPosition).length">
+            Aucune annonce trouvée <br/>à proximité <br/>
+        </p>
+
+        <p class="noDataMessage"
+           ng-if="!!Location.isSet && !update(Location.currentPosition).length">
+            <button class="button button-calm" ng-click="gotoAdd()">
+                <i class="icon ion-ios-camera"></i>
+                Ajouter une annonce
+            </button>
+        </p>
+
         <ion-list>
 
             <!--collection-item-height="323"
