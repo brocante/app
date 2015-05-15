@@ -25,14 +25,15 @@ angular.module('starter.services', [])
     .factory('Products', function($firebase, DB, $rootScope) {
         var factory = {};
 
-        factory.getByLocation = function(coords) {
-            var results = [];
+        var oldLocation;
+        var query;
+        var defaultCriteria = {
+            radius: 20
+        };
 
-            var query = DB.positions.query({
-                center: [coords.latitude, coords.longitude],
-                radius: 20
-            });
+        factory.items = [];
 
+        var catchGeoEvents = function(query) {
             query.on('key_entered', function(key, location, distance) {
                 var item = {
                     key     : key,
@@ -48,23 +49,24 @@ angular.module('starter.services', [])
                     if(item.object) {
                         item.object.priority = productSnap.getPriority() || 0;
                     }
+
+                    factory.items.push(item);
+
                     $rootScope.$digest();
                 });
-
-                results.push(item);
 
                 $rootScope.$digest();
             });
 
             query.on('key_exited', function(key) {
-                _.remove(results, function(item) {
+                _.remove(factory.items, function(item) {
                     return item.key === key;
                 });
                 $rootScope.$digest();
             });
 
             query.on('key_moved', function(key, location, distance) {
-                var item = _.find(results, function(item) {
+                var item = _.find(factory.items, function(item) {
                     return item.key === key;
                 });
 
@@ -72,19 +74,31 @@ angular.module('starter.services', [])
                 item.distance = distance;
                 $rootScope.$digest();
             });
-
-            return results;
         };
 
-        factory.getById = function(productId) {
-            return $firebase(DB.products.child(productId)).$asObject();
+        factory.setLocation = function(location) {
+
+            var criteria = angular.extend({}, defaultCriteria, {
+                center: [
+                    location.latitude,
+                    location.longitude
+                ]
+            });
+
+            if(!oldLocation) {
+                oldLocation = location;
+                query = DB.positions.query(criteria);
+                catchGeoEvents(query);
+            } else {
+                query.updateCriteria(criteria);
+            }
         };
 
         return factory;
     })
 
 
-    .factory('Location', function($q, $cordovaGeolocation, $ionicPlatform) {
+    .factory('Location', function($q, $cordovaGeolocation, $ionicPlatform, $timeout) {
         var factory = {};
 
         var posOptions = {
@@ -101,17 +115,36 @@ angular.module('starter.services', [])
             var deferred = $q.defer();
 
             $ionicPlatform.ready(function() {
-                $cordovaGeolocation.watchPosition(posOptions).then(null, function() {
-                    $cordovaGeolocation.clearWatch();
-                    console.log('Location error - LocationProvider');
-                }, function(position) {
-                    $cordovaGeolocation.clearWatch();
 
-                    factory.currentPosition = position.coords;
+                var timer;
+                var watch = $cordovaGeolocation.watchPosition(posOptions);
+
+                var final = function() {
                     factory.isSet = true;
                     deferred.resolve(factory.currentPosition);
                     alreadyLocated.resolve();
+
+                    watch.cancel();
+                    $timeout.cancel(timer);
+                };
+
+                timer = $timeout(final, 5000);
+
+                watch.then(null, function() {
+
+                    deferred.reject();
+                    alert('Erreur de localisation');
+
+                    watch.cancel();
+
+                }, function(position) {
+                    factory.currentPosition = position.coords;
+
+                    if(factory.currentPosition.accuracy < 50) {
+                        final();
+                    }
                 });
+
             });
 
             return deferred.promise;

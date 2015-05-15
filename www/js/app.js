@@ -10,7 +10,7 @@ angular.module('starter', [
     'jrCrop'
 ])
 
-    .run(function($ionicPlatform, Location, Auth, $ionicLoading, $location, $rootScope, DB) {
+    .run(function($ionicPlatform, Location, Auth, $ionicLoading, $location, $rootScope, DB, Products) {
         $ionicPlatform.ready(function() {
             if(window.cordova && window.cordova.plugins.Keyboard) {
                 cordova.plugins.Keyboard.hideKeyboardAccessoryBar(false);
@@ -20,7 +20,9 @@ angular.module('starter', [
                 StatusBar.styleLightContent();
             }
 
-            Location.update();
+            Location.update().then(function(location) {
+                Products.setLocation(location);
+            });
 
             Auth.$onAuth(function(authData) {
                 $rootScope.tryAuth = true;
@@ -63,11 +65,15 @@ angular.module('starter', [
         });
     })
 
+    .config(function($ionicConfigProvider) {
+        $ionicConfigProvider.views.maxCache(0);
+    })
+
     .config(function($stateProvider, $urlRouterProvider, $cordovaFacebookProvider) {
 
         //cordova -d plugin add /Users/yannlombard/test/phonegap-facebook-plugin --variable APP_ID="1459559780935638" --variable APP_NAME="Brocante"
 
-        if (window.cordova && window.cordova.platformId === 'browser') {
+        if(window.cordova && window.cordova.platformId === 'browser') {
             var appID = 1459559780935638;
             $cordovaFacebookProvider.browserInit(appID);
             // version is optional. It refers to the version of API you may want to use.

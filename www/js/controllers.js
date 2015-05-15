@@ -124,16 +124,7 @@ angular.module('starter.controllers', [])
             $location.path('/tab/photo');
         };
 
-        var current;
-        var products = [];
-        $scope.update = function(location) {
-            if(current !== location && location.latitude) {
-                current = location;
-                products = Products.getByLocation(location);
-            }
-            return products;
-        };
-
+        $scope.Products = Products;
 
         $scope.show = function(product) {
 
@@ -201,6 +192,17 @@ angular.module('starter.controllers', [])
                             break;
 
                         case remove:
+
+                            /*var confirmPopup = $ionicPopup.confirm({
+                                title   : 'Supprimer l\'annonce ?',
+                                template: 'Êtes-vous sur de vouloir supprimer cette annonce ?'
+                            });
+
+                            confirmPopup.then(function(res) {
+                                if(res) {
+                                    Backend.removeProduct(product);
+                                }
+                            });*/
 
                             navigator.notification.confirm('Êtes-vous sûr(e) de vouloir supprimer cette annonce ?', function(buttonIndex) {
                                 if(buttonIndex === 2) {
