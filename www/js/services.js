@@ -76,25 +76,45 @@ angular.module('starter.services', [])
             });
         };
 
-        factory.setLocation = function(location) {
+        factory.setLocation = function() {
+            var location = $rootScope.currentLocation;
+            var user = $rootScope.currentUser;
 
-            var criteria = angular.extend({}, defaultCriteria, {
-                center: [
-                    location.latitude,
-                    location.longitude
-                ]
-            });
+            if(location && user) {
+                var criteria = angular.extend({}, defaultCriteria, {
+                    center: [
+                        location.latitude,
+                        location.longitude
+                    ]
+                });
 
-            if(!oldLocation) {
-                oldLocation = location;
-                query = DB.positions.query(criteria);
-                catchGeoEvents(query);
-            } else {
-                query.updateCriteria(criteria);
+                if(!oldLocation) {
+                    oldLocation = location;
+                    query = DB.positions.query(criteria);
+                    catchGeoEvents(query);
+                } else {
+                    query.updateCriteria(criteria);
+                }
             }
+
         };
 
         return factory;
+    })
+
+    .factory('User', function(DB, $rootScope, Products, $q) {
+        return {
+            get: function(authData) {
+                var deferred = $q.defer();
+
+                DB.users.child(authData.uid).once('value', function(snap) {
+                    $rootScope.currentUser = snap.val();
+                    deferred.resolve($rootScope.currentUser);
+                });
+
+                return deferred.promise;
+            }
+        };
     })
 
 
@@ -130,10 +150,11 @@ angular.module('starter.services', [])
 
                 timer = $timeout(final, 5000);
 
-                watch.then(null, function() {
+                watch.then(null, function(err) {
 
                     deferred.reject();
                     alert('Erreur de localisation');
+                    log(err, 'err');
 
                     watch.cancel();
 

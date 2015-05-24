@@ -11,7 +11,7 @@ var log = function(object, path) {
 
 angular.module('starter.controllers', [])
 
-    .controller('LoginCtrl', function($scope, DB, $firebaseAuth, $ionicModal, $state, $ionicLoading, $cordovaFacebook, $location) {
+    .controller('LoginCtrl', function($scope, DB, $firebaseAuth, $ionicModal, $state, $ionicLoading, $cordovaFacebook, $location, Products, User) {
         var auth = $firebaseAuth(DB.main);
 
         $ionicModal.fromTemplateUrl('templates/signup.html', {
@@ -24,8 +24,12 @@ angular.module('starter.controllers', [])
             DB.users.child(authData.uid + '/config/email').set(authData.facebook.email);
             DB.users.child(authData.uid + '/auth').update(authData);
 
-            $ionicLoading.hide();
-            $location.path('/tab/products');
+            User.get(authData).then(function() {
+                Products.setLocation();
+
+                $ionicLoading.hide();
+                $location.path('/tab/products');
+            });
         };
 
         $scope.signInFacebook = function() {
@@ -37,6 +41,7 @@ angular.module('starter.controllers', [])
             });
 
             if(isWebView) {
+
                 $cordovaFacebook.login([
                     'public_profile',
                     'email'
@@ -57,10 +62,12 @@ angular.module('starter.controllers', [])
                     });
 
                 }, function(error) {
+
                     console.log('Firebase Authentication failed:', error);
                     alert('L\'identification a échouée');
                     $ionicLoading.hide();
                 });
+
             } else {
 
                 auth.$authWithOAuthPopup('facebook', {
@@ -194,15 +201,15 @@ angular.module('starter.controllers', [])
                         case remove:
 
                             /*var confirmPopup = $ionicPopup.confirm({
-                                title   : 'Supprimer l\'annonce ?',
-                                template: 'Êtes-vous sur de vouloir supprimer cette annonce ?'
-                            });
+                             title   : 'Supprimer l\'annonce ?',
+                             template: 'Êtes-vous sur de vouloir supprimer cette annonce ?'
+                             });
 
-                            confirmPopup.then(function(res) {
-                                if(res) {
-                                    Backend.removeProduct(product);
-                                }
-                            });*/
+                             confirmPopup.then(function(res) {
+                             if(res) {
+                             Backend.removeProduct(product);
+                             }
+                             });*/
 
                             navigator.notification.confirm('Êtes-vous sûr(e) de vouloir supprimer cette annonce ?', function(buttonIndex) {
                                 if(buttonIndex === 2) {

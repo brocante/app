@@ -10,7 +10,7 @@ angular.module('starter', [
     'jrCrop'
 ])
 
-    .run(function($ionicPlatform, Location, Auth, $ionicLoading, $location, $rootScope, DB, Products) {
+    .run(function($ionicPlatform, Location, Auth, $ionicLoading, $location, $rootScope, DB, Products, User) {
         $ionicPlatform.ready(function() {
             if(window.cordova && window.cordova.plugins.Keyboard) {
                 cordova.plugins.Keyboard.hideKeyboardAccessoryBar(false);
@@ -21,26 +21,26 @@ angular.module('starter', [
             }
 
             Location.update().then(function(location) {
-                Products.setLocation(location);
+                $rootScope.currentLocation = location;
+                Products.setLocation();
             });
 
             Auth.$onAuth(function(authData) {
                 $rootScope.tryAuth = true;
 
                 if(authData) {
+                    User.get(authData).then(function() {
+                        Products.setLocation();
 
-                    // if current path is login, redirect to products
-                    if($location.path() === '/login') {
-                        $location.path('/tab/products');
-                    }
-
-                    DB.users.child(authData.uid).once('value', function(snap) {
-                        $rootScope.currentUser = snap.val();
+                        // if current path is login, redirect to products
+                        if($location.path() === '/login') {
+                            $location.path('/tab/products');
+                        }
                     });
 
                 } else {
                     console.log("Logged out");
-                    $rootScope.currentUser = {};
+                    $rootScope.currentUser = null;
                     $ionicLoading.hide();
                     $location.path('/login');
                 }
@@ -65,18 +65,14 @@ angular.module('starter', [
         });
     })
 
-    .config(function($ionicConfigProvider) {
+    .config(function($stateProvider, $urlRouterProvider, $cordovaFacebookProvider, $ionicConfigProvider) {
         $ionicConfigProvider.views.maxCache(0);
-    })
-
-    .config(function($stateProvider, $urlRouterProvider, $cordovaFacebookProvider) {
 
         //cordova -d plugin add /Users/yannlombard/test/phonegap-facebook-plugin --variable APP_ID="1459559780935638" --variable APP_NAME="Brocante"
 
         if(window.cordova && window.cordova.platformId === 'browser') {
             var appID = 1459559780935638;
             $cordovaFacebookProvider.browserInit(appID);
-            // version is optional. It refers to the version of API you may want to use.
         }
 
         $stateProvider

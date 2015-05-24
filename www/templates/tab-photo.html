@@ -1,24 +1,27 @@
 <ion-view view-title="Ajouter">
     <ion-content class="padding">
-        <p class="wording">Ajouter votre annonce <br/>gratuitement à partir <br/>d'une simple photo.</p>
-        <p class="wording">Votre position actuelle <br/>est nécessaire pour <br/>publier votre objet.</p>
-        <p class="wording">Conseil&nbsp;: <br/>lumière abondante = photo réussie !</p>
+        <div style="margin-top: 4em;">
 
-        <button class="button button-block button-calm" ng-click="takePhoto()">
-            Prendre une photo
-        </button>
+            <p class="wording">Ajouter votre annonce <br/>gratuitement à partir <br/>d'une simple photo.</p>
+            <p class="wording">Votre position actuelle <br/>est nécessaire pour <br/>publier votre objet.</p>
+            <p class="wording">Conseil&nbsp;: <br/>lumière abondante = photo réussie !</p>
 
-        <button class="button button-block button-calm" ng-click="choosePhoto()">
-            À partir de la bibliothèque
-        </button>
+            <button class="button button-block button-calm" ng-click="takePhoto()">
+                Prendre une photo
+            </button>
 
-        <bro-loader
-                ng-if="isUploading"
-                class="cssLoader"></bro-loader>
+            <button class="button button-block button-calm" ng-click="choosePhoto()">
+                À partir de la bibliothèque
+            </button>
 
-        <!--<img ng-src="{{image}}" alt="" style="display: block; max-width:100%;"/>-->
+            <bro-loader
+                    ng-if="isUploading"
+                    class="cssLoader"></bro-loader>
 
-        <p ng-if="progress">{{progress || 0 }} % envoyé</p>
+            <!--<img ng-src="{{image}}" alt="" style="display: block; max-width:100%;"/>-->
 
+            <p ng-if="progress">{{progress || 0 }} % envoyé</p>
+
+        </div>
     </ion-content>
 </ion-view>
