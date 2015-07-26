@@ -1,6 +1,9 @@
 <ion-view view-title="Brocante">
     <ion-content>
 
+        <!--Location.isSet : {{Location.isSet || 'false'}}<br/>
+        Products.items.length : {{Products.items.length || 0}}-->
+
         <p ng-if="!Location.isSet" style="text-align: center;margin: 2em 0;">
             <bro-loader class="cssLoader"></bro-loader>
         </p>
